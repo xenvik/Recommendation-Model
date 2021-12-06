@@ -105,7 +105,7 @@ def normalisation(ranking):
 
     for rater in ranking:
         for rated in rater:
-            value = float(rated[1]) * 100 / max
+            value = float(rated[1]) / max
             if value == 0:
                 v = 1
             rated[1] = value
