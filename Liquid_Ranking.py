@@ -1,11 +1,33 @@
+# MIT License
+# 
+# Copyright (c) 2018 Stichting SingularityNET
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 # We need to find the leaders by mentions.
-# We need to rank leaders by weight given to them by mentions.
+# We need to rank leaders by weight given to them by mentions (Building Liquid Ranking).
 # Initial weight to all mentions is given as equal.
 # Calculate score on basis of above, iterations, updating, also mentions of feed owners
 # should be considered while scoring.
 
 import re
-# import itertools
 import operator
 import math
 
@@ -71,7 +93,6 @@ def new_ranker(ratrw, rated):
         rt = list(lqr)
         rt[1] = rt[1] * wt[1]
         new_rated.append(rt)
-    #print(new_rated)
     return new_rated
 
 
@@ -85,7 +106,6 @@ def weights(ranking):
             for ratrwm in new_weights:
                 if ratrw[0] == ratrwm[0] and ratrw[1] > ratrwm[1]:
                     ratrwm[1] = ratrw[1]
-    #print(new_weights)
     return new_weights
 
 
@@ -101,7 +121,6 @@ def normalisation(ranking):
                 max = valuelog
             if value > max:
                 max = value
-    #print (max)
 
     for rater in ranking:
         for rated in rater:
@@ -124,7 +143,6 @@ for check in range(iterations):
             new_ranking.append(new_ranker(weight[i], rated))
             i += 1
         ranking = normalisation(new_ranking)
-    #print(ranking)
 
 def counter(ranking):
     final_list = []
@@ -148,8 +166,6 @@ def counter_add(ranking, final_list):
 
 final_list = counter(ranking)
 liquid_ranking = counter_add(ranking, final_list)
-
-#print(liquid_ranking)
 
 import operator # Descending order
 
