@@ -91,8 +91,9 @@ def new_ranker(ratrw, rated):
     new_rated = []
     for lqr in rated:
         rt = list(lqr)
-        rt[1] = rt[1] * wt[1]
+        rt[1] = (rt[1] * wt[1]) + 1
         new_rated.append(rt)
+    #print(new_rated)
     return new_rated
 
 
@@ -106,32 +107,37 @@ def weights(ranking):
             for ratrwm in new_weights:
                 if ratrw[0] == ratrwm[0] and ratrw[1] > ratrwm[1]:
                     ratrwm[1] = ratrw[1]
+    #print(new_weights)
     return new_weights
 
 
 def normalisation(ranking):
-    max = 0
+    max = float()
     for rater in ranking:
         for rated in rater:
             value = float(rated[1])
-            #print(value)
+            #print('value= ', value)
             #if value > 1.0 :
             valuelog = math.log((rated[1]+1), 10)
+            #print('valuelog= ', valuelog)
             if max < valuelog:
                 max = valuelog
             if value > max:
                 max = value
+            print (max)
 
     for rater in ranking:
         for rated in rater:
+            #print('rated',rated[1])
             value = float(rated[1]) / max
             if value == 0:
-                v = 1
+                v = 0.1
             rated[1] = value
+            #print('value updated', value)
     return ranking
 
 
-iterations=99 #sanity check
+iterations=9 #sanity check
 for check in range(iterations):
     new_ranking = []
     if check == 0:
@@ -143,6 +149,8 @@ for check in range(iterations):
             new_ranking.append(new_ranker(weight[i], rated))
             i += 1
         ranking = normalisation(new_ranking)
+
+#print(ranking)
 
 def counter(ranking):
     final_list = []
@@ -167,6 +175,8 @@ def counter_add(ranking, final_list):
 final_list = counter(ranking)
 liquid_ranking = counter_add(ranking, final_list)
 
+#print(liquid_ranking)
+
 import operator # Descending order
 
 peanuts = dict(liquid_ranking)
@@ -177,7 +187,7 @@ dfm = pd.DataFrame.from_dict(data=dfm, orient='index')
 print(dfm)
 
 #saving the dataframe
-dfm.to_csv('Mentions_LiquidRank.csv', header=['Mentions'])
+#dfm.to_csv('Mentions_LiquidRank.csv', header=['Mentions'])
 
 
 
